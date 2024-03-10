@@ -17,18 +17,21 @@ class Menu:
         self.menu = json.loads(r.text)
         self.item_types = ["ENTREES", "VEGETABLES", "FRUITS"]
 
-
-    def pretty_print(self):
-        print(f'Menu for {self.date.strftime("%A %B %-d, %Y")}')
+    def to_string(self):
+        menu_str = f'Menu for {self.date.strftime("%A %B %-d, %Y")}\n'
         for item_type in self.item_types:
-            self.print_item_by_type(item_type)
-        print('\n')
+            menu_str += self.items_by_type_to_string(item_type)
+        menu_str += '\n'
 
-    def print_item_by_type(self, item_type):
-        print(f'\n---{item_type}---')
+        return menu_str
+
+    def items_by_type_to_string(self, item_type):
+        item_str = (f'\n---{item_type}---\n')
 
         if item_type not in self.menu.keys():
-            print (f'\tNo {item_type} found')
+            item_str += f'\tNo {item_type} found\n'
         else:
             for item in self.menu[item_type]:
-                print(f'\t{item["MenuItemDescription"]}')
+                item_str += f'\t{item["MenuItemDescription"]}\n'
+        
+        return item_str
