@@ -32,3 +32,8 @@ export PERSON_ID=<person id>
 * Run the program:
 
 `./lunch_getter.py`
+
+## Terraform deployments
+
+All terraform deployments are currently executed locally. Eventually this will
+be automated but for now that's the path of least resistance.
