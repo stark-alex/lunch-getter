@@ -6,6 +6,7 @@ import boto3
 from datetime import date, timedelta, datetime
 from menu import Menu
 import logging
+import jinja2
 
 logger = logging.getLogger()
 logger.setLevel("INFO")
@@ -39,7 +40,7 @@ def send_menu(to_addr, subject, body):
                 'Data': subject
             },
             'Body': {
-                'Text': {
+                'Html': {
                     'Data': body
                 }
             }
@@ -59,21 +60,35 @@ def handler(event, context):
     end_date = start_date + timedelta(days=4)
     
     # Build the menu for the week
-    full_menu_str = ''
+    full_menu = {
+        'date': start_date.strftime('%A %B %-d, %Y'),
+        'daily_menus': []
+    }
     while start_date <= end_date:
         menu = Menu(os.environ['SCHOOL_ID'], os.environ['PERSON_ID'], start_date)
-        full_menu_str += menu.to_string()
+        full_menu["daily_menus"].append(menu.get())
         start_date += timedelta(days=1)
 
+    # Load up the email template
+    loader = jinja2.FileSystemLoader(searchpath='./templates')
+    template_env = jinja2.Environment(loader=loader)
+    email_template = template_env.get_template('email.template')
+    
+    # Render the email
+    email_body = email_template.render(**full_menu)
+
+    # Send out email
     for addr in get_configured_emails():
         logger.info(f'Sending menu to {addr}')
-        send_menu(addr, f'FLA Menu for week of {next_monday().strftime("%m/%d/%Y")}', full_menu_str)
+        send_menu(addr, f'FLA Menu for week of {next_monday().strftime("%m/%d/%Y")}', email_body)
 
-    return { 'menu': full_menu_str }
+    return { 'menu': email_body }
 
 def main():
     resp = handler({}, {})
-    print(resp['menu'])
+
+    with open("test_out.html", "w") as f:
+        f.write(resp['menu'])
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLA School Lunch Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        h1 {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .category-image {
+            max-width: 100px;
+            height: auto;
+        }
+        .title {
+            display: flex;
+            align-items:center;
+        }
+        .column {
+            float: left;
+            width: 20%;
+            }
+
+            /* Clear floats after the columns */
+            .row:after {
+            content: "";
+            display: table;
+            clear: both;
+            }
+    </style>
+</head>
+<body>
+
+<div class="title">
+    <img src="https://s3.amazonaws.com/files.galaxydigital.com/5321/agency/101950.jpg?20230808184855?area=agency" alt="FLA Logo" class="category-image">
+    <h1>Menu for Week of {{ date }}</h1>
+    <img src="https://s3.amazonaws.com/files.galaxydigital.com/5321/agency/101950.jpg?20230808184855?area=agency" alt="FLA Logo" class="category-image">
+</div>
+<hr/>
+<div class="row">
+{% for menu in daily_menus %}
+    {% if 'entrees' in menu %}
+    <div class="column">
+        <h2>{{ menu.day }}</h2>
+
+        <h3>ENTREES</h3>
+        <ul>
+{% for entree in menu.entrees %}
+            <li>{{ entree }}</li>
+{% endfor %}
+        </ul>
+        <h3>VEGETABLES</h3>
+        <ul>
+{% for veggie in menu.veggies %}
+            <li>{{ veggie }}</li>
+{% endfor %}
+        </ul>
+        <h3>FRUITS</h3>
+        <ul>
+{% for fruit in menu.fruits %}
+            <li>{{ fruit }}</li>
+{% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="column">
+        <h2>{{ menu.day }}</h2>
+        <h3>No School</h3>
+    </div>
+    {% endif %}
+{% endfor %}
+
+</body>
+</html>

@@ -15,23 +15,23 @@ class Menu:
 
         self.date = date
         self.menu = json.loads(r.text)
-        self.item_types = ["ENTREES", "VEGETABLES", "FRUITS"]
 
-    def to_string(self):
-        menu_str = f'Menu for {self.date.strftime("%A %B %-d, %Y")}\n'
-        for item_type in self.item_types:
-            menu_str += self.items_by_type_to_string(item_type)
-        menu_str += '\n'
+    def get(self):
+        menu = { 'day': self.date.strftime('%A') }
 
-        return menu_str
+        if menu:
+            menu['entrees'] = self.get_items_by_type("ENTREES")
+            menu['veggies'] = self.get_items_by_type("VEGETABLES")
+            menu['fruits'] = self.get_items_by_type("FRUITS")
 
-    def items_by_type_to_string(self, item_type):
-        item_str = (f'\n---{item_type}---\n')
+        return menu
 
+    def get_items_by_type(self, item_type):
+        items = []
         if item_type not in self.menu.keys():
-            item_str += f'\tNo {item_type} found\n'
+            items.append(f'\tNo {item_type} found\n')
         else:
             for item in self.menu[item_type]:
-                item_str += f'\t{item["MenuItemDescription"]}\n'
+                items.append(f'\t{item["MenuItemDescription"]}\n')
         
-        return item_str
+        return items

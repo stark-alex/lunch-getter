@@ -1,5 +1,6 @@
 src/.env
 src/__pycache__/**
+src/test_out.html
 
 .terraform/**
 .terraform*
