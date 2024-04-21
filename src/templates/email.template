@@ -4,80 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FLA School Lunch Menu</title>
-    <style>
+<style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2, h3 {
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .title {
+            display: block;
+            margin: 0 auto;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .menu-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .menu-day {
+            width: 200px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        .category-image {
+            width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
         h2 {
-            margin-top: 20px;
+            color: #666;
+        }
+        h3 {
+            color: #888;
         }
         ul {
-            list-style-type: none;
-            padding: 0;
+            padding-left: 20px;
+            color: #555;
         }
         li {
             margin-bottom: 5px;
         }
-        h1 {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-        .category-image {
-            max-width: 100px;
-            height: auto;
-        }
-        .title {
-            display: flex;
-            align-items:center;
-        }
-        .column {
-            float: left;
-            width: 20%;
-            }
-
-            /* Clear floats after the columns */
-            .row:after {
-            content: "";
-            display: table;
-            clear: both;
-            }
     </style>
 </head>
 <body>
 
 <div class="title">
-    <img src="https://s3.amazonaws.com/files.galaxydigital.com/5321/agency/101950.jpg?20230808184855?area=agency" alt="FLA Logo" class="category-image">
     <h1>Menu for Week of {{ date }}</h1>
     <img src="https://s3.amazonaws.com/files.galaxydigital.com/5321/agency/101950.jpg?20230808184855?area=agency" alt="FLA Logo" class="category-image">
 </div>
 <hr/>
-<div class="row">
+<div class="menu-container">
 {% for menu in daily_menus %}
     {% if 'entrees' in menu %}
-    <div class="column">
+    <div class="menu-day">
         <h2>{{ menu.day }}</h2>
-
-        <h3>ENTREES</h3>
-        <ul>
+        <div class="menu-item">
+            <h3>ENTREES</h3>
+            <ul>
 {% for entree in menu.entrees %}
-            <li>{{ entree }}</li>
+                <li>{{ entree }}</li>
 {% endfor %}
-        </ul>
-        <h3>VEGETABLES</h3>
-        <ul>
+            </ul>
+        </div>
+        <div class="menu-item">
+            <h3>VEGETABLES</h3>
+            <ul>
 {% for veggie in menu.veggies %}
-            <li>{{ veggie }}</li>
+                <li>{{ veggie }}</li>
 {% endfor %}
-        </ul>
-        <h3>FRUITS</h3>
-        <ul>
+            </ul>
+        </div>
+        <div class="menu-item">
+            <h3>FRUITS</h3>
+            <ul>
 {% for fruit in menu.fruits %}
-            <li>{{ fruit }}</li>
+                <li>{{ fruit }}</li>
 {% endfor %}
-        </ul>
+            </ul>
+        </div>
     </div>
     {% else %}
     <div class="column">
