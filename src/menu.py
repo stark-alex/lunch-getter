@@ -2,16 +2,17 @@ import requests, json
 
 class Menu:
     def __init__(self, school_id, person_id, date):
-        params = {
+        # Retrieve the menu for the school/person/date
+        r = requests.get(
+            url='https://webapis.schoolcafe.com/api/CalendarView/GetDailyMenuitemsByGrade',
+            params={
             'SchoolId': school_id,
             'ServingDate': date.strftime("%m/%d/%Y"),
             'ServingLine': 'Main',
             'MealType': 'Lunch',
             'Grade': '03',
             'PersonId': person_id
-        }
-        url = 'https://webapis.schoolcafe.com/api/CalendarView/GetDailyMenuitemsByGrade'
-        r = requests.get(url, params=params)
+        })
 
         self.date = date
         self.menu = json.loads(r.text)
