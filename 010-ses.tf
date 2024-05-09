@@ -1,3 +1,4 @@
-resource "aws_ses_email_identity" "stark1380" {
-  email = "stark.1380@gmail.com"
+resource "aws_ses_email_identity" "email_ids" {
+  for_each = toset(local.emails)
+  email = each.key
 }

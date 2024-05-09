@@ -11,7 +11,7 @@ resource "aws_iam_policy" "ses_send" {
           "ses:SendRawEmail"
         ]
         Effect   = "Allow"
-        Resource = aws_ses_email_identity.stark1380.arn
+        Resource = "*"
       },
     ]
   })
@@ -52,13 +52,14 @@ module "lambda_function" {
   description   = "Lunch Getter Lambda (${terraform.workspace})"
   handler       = "lunch_getter.handler"
   runtime       = "python3.12"
-  timeout = 10
+  timeout = 60
 
   source_path = "./src"
 
   environment_variables = {
     SCHOOL_ID  = "b4435b07-cb6d-4fc3-972b-7bf2d4deea6a"
     PERSON_ID  = "ca3665a5-f84c-433e-8a10-f9148ebf9230"
+    EMAILS     = join(",", local.emails)
   }
 
   attach_policies    = true

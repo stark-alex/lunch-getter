@@ -3,7 +3,8 @@
 import os
 import json
 import boto3
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
+from time import sleep
 from menu import Menu
 import logging
 import jinja2
@@ -39,41 +40,28 @@ def load_email_template():
     template_env = jinja2.Environment(loader=loader)
     return template_env.get_template('email.template')
 
-def get_configured_emails(client):
-    try:
-        # Retrieve email config
-        resp = client.get_secret_value(SecretId='lunch-getter-config')
-        logger.info("Secret retrieved successfully.")
-
-        # return list of emails
-        secret_string = json.loads(resp["SecretString"])
-        email_addrs = secret_string['email_addresses'].split(',')
-        return email_addrs
-
-    except client.exceptions.ResourceNotFoundException:
-        logger.info(f"The requested secret lunch-getter-config was not found.")
-        raise
-    except Exception as e:
-        logger.error(f"An unknown error occurred: {str(e)}.")
-        raise
-
 def send_menu(client, to_addr, subject, body):
-    response = client.send_email(
-        Source='stark.1380@gmail.com',
-        Destination={
-            'ToAddresses': [to_addr]
-        },
-        Message={
-            'Subject': {
-                'Data': subject
+    # Sleep a bit to avoid sandbox ses limitations
+    sleep(2)
+    try:
+        client.send_email(
+            Source='stark.1380@gmail.com',
+            Destination={
+                'ToAddresses': [to_addr]
             },
-            'Body': {
-                'Html': {
-                    'Data': body
+            Message={
+                'Subject': {
+                    'Data': subject
+                },
+                'Body': {
+                    'Html': {
+                        'Data': body
+                    }
                 }
             }
-        }
-    )
+        )
+    except Exception as e:
+        logger.error(f"An error occurred while sending email to {to_addr}: {str(e)}.")
 
 def handler(event, context):
     logger.info(event)
@@ -88,7 +76,8 @@ def handler(event, context):
     sm_client = boto3.client('secretsmanager', region_name='us-east-2')
     ses_client = boto3.client('ses', region_name='us-east-2')
 
-    for addr in get_configured_emails(sm_client):
+    email_addrs = os.environ["EMAILS"].split(',')
+    for addr in email_addrs:
         logger.info(f'Sending menu to {addr}')
         send_menu(ses_client, addr, f'FLA Menu for week of {next_monday().strftime("%m/%d/%Y")}', email_body)
 

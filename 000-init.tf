@@ -16,3 +16,10 @@ terraform {
 provider "aws" {
   region = "us-east-2"
 }
+
+locals {
+  emails = [
+    "stark.1380@gmail.com",
+    "majorastark@gmail.com"
+  ]
+}
